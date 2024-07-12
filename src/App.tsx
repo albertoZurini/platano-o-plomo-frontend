@@ -5,7 +5,8 @@ import "./App.css";
 import RPC from "./web3RPC"; // for using web3.js
 // import RPC from "./viemRPC"; // for using viem
 // import RPC from "./ethersRPC"; // for using ethers.js
-import { useWalletServicesPlugin  } from "@web3auth/wallet-services-plugin-react-hooks";
+import { useWalletServicesPlugin } from "@web3auth/wallet-services-plugin-react-hooks";
+import GameBoard from "./components/GameBoard";
 
 const newChain = {
   chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -360,49 +361,30 @@ function App() {
   }, [isMFAEnabled]);
 
   return (
-      <div className="flex flex-col h-screen">
-        <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-4"> 
-          <div className="h-1/2">
-            <div>
-              {/* {isConnected && MFAHeader} */}
-            </div>
-            {/* <div className="grid">{isConnected ? loggedInView : unloggedInView}</div> */}
-          </div>
-          <div className="h-1/2 flex flex-row mx-3 justify-between">
-            <div className="w-1/6 h-15 border-2 border-black rounded-md">First stone</div>
-            <div className="w-1/6 h-15 border-2 border-black rounded-md">Second stone</div>
-            <div className="w-1/6 h-15 border-2 border-black rounded-md">Third stone</div>
-            <div className="w-1/6 h-15 border-2 border-black rounded-md">Fourth stone</div>
-            <div className="w-1/6 h-15 border-2 border-black rounded-md">Fifth stone</div>
-          </div>
-        </div>
-        <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-3 flex justify-between"> 
-          <div className="w-1/3 border-4 rounded-lg">
-            <div className="h-1/2">
-            First Player
-              <div></div>
-            </div>
-            <div className="flex h-1/2 border-2 rounded-lg">
-              <div className="w-1/3 border-2 rounded-lg">left direction</div>
-              <div className="w-1/3">submit button, dice picture</div>
-              <div className="w-1/3 border-2 rounded-lg">right direction</div>
-            </div>
-          </div>
-
-          <div className="w-1/3 border-4 rounded-lg">game moves history</div>
-
-          <div className="w-1/3 border-4 rounded-lg">
-            <div className="h-1/2">
-            Second Player
-              <div></div>
-            </div>
-            <div className="flex h-1/2 border-2 rounded-lg">
-              <div className="w-1/3 border-2 rounded-lg">left direction</div>
-              <div className="w-1/3">submit button, dice picture</div>
-              <div className="w-1/3 border-2 rounded-lg">right direction</div>
-            </div>
-          </div>        </div>
-      </div>
+    <div className="flex flex-col h-screen">
+      <GameBoard />
+    </div>
+    // <div className="flex flex-col h-screen">
+    //   <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-4">
+    //     <div className="h-1/2">
+    //       <div>
+    //         {/* {isConnected && MFAHeader} */}
+    //       </div>
+    //       {/* <div className="grid">{isConnected ? loggedInView : unloggedInView}</div> */}
+    //     </div>
+    //     <div className="h-1/2 flex flex-row mx-3 justify-between">
+    //       <div className="w-1/6 h-15 border-2 border-black rounded-md">First stone</div>
+    //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Second stone</div>
+    //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Third stone</div>
+    //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Fourth stone</div>
+    //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Fifth stone</div>
+    //     </div>
+    //   </div>
+    //   <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-2 flex justify-between">
+    //     <div className="w-1/3 border-4 rounded-lg">first player data</div>
+    //     <div className="w-1/3 border-4 rounded-lg">second player data</div>
+    //   </div>
+    // </div>
   );
 }
 
