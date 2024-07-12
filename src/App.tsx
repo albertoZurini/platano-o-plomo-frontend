@@ -376,10 +376,32 @@ function App() {
             <div className="w-1/6 h-15 border-2 border-black rounded-md">Fifth stone</div>
           </div>
         </div>
-        <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-2 flex justify-between"> 
-          <div className="w-1/3 border-4 rounded-lg">first player data</div>
-          <div className="w-1/3 border-4 rounded-lg">second player data</div>
-        </div>
+        <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-3 flex justify-between"> 
+          <div className="w-1/3 border-4 rounded-lg">
+            <div className="h-1/2">
+            First Player
+              <div></div>
+            </div>
+            <div className="flex h-1/2 border-2 rounded-lg">
+              <div className="w-1/3 border-2 rounded-lg">left direction</div>
+              <div className="w-1/3">submit button, dice picture</div>
+              <div className="w-1/3 border-2 rounded-lg">right direction</div>
+            </div>
+          </div>
+
+          <div className="w-1/3 border-4 rounded-lg">game moves history</div>
+
+          <div className="w-1/3 border-4 rounded-lg">
+            <div className="h-1/2">
+            Second Player
+              <div></div>
+            </div>
+            <div className="flex h-1/2 border-2 rounded-lg">
+              <div className="w-1/3 border-2 rounded-lg">left direction</div>
+              <div className="w-1/3">submit button, dice picture</div>
+              <div className="w-1/3 border-2 rounded-lg">right direction</div>
+            </div>
+          </div>        </div>
       </div>
   );
 }
