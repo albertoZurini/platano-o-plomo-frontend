@@ -9,8 +9,14 @@ import { createPublicClient, http, createWalletClient, custom } from 'viem'
 import { arbitrumSepolia } from 'viem/chains'
 import Button from '@mui/material/Button';
 import LinearWithValueLabel from "./Healthbar";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CasinoIcon from '@mui/icons-material/Casino';
 
 function App() {
+
+  const [selectedArrow, setSelectedArrow] = useState('none');
+
 
   const {
     initModal,
@@ -102,7 +108,7 @@ function App() {
       }, 2000);
     }
   };
-  
+
   return (
       <div className="flex flex-col h-screen">
         <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-4"> 
@@ -120,16 +126,31 @@ function App() {
         </div>
         <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-3 flex justify-between"> 
           <div className="w-1/3 border-4 rounded-lg">
-            <div className="h-1/2">
+            <div className="h-2/3">
             First Player
               <div>
                 <LinearWithValueLabel fixedValue={50} />
               </div>
             </div>
-            <div className="flex h-1/2 border-2 rounded-lg">
-              <div className="w-1/3 border-2 rounded-lg">left direction</div>
-              <div className="w-1/3">submit button, dice picture</div>
-              <div className="w-1/3 border-2 rounded-lg">right direction</div>
+
+            <div className="flex h-1/3 border-2 rounded-lg">
+              <div
+                className={`flex w-1/3 border-2 rounded-lg justify-center items-center ${selectedArrow === 'left' ? 'bg-green-500' : ''}`}
+                onClick={() => setSelectedArrow('left')}
+              >                
+                <ArrowBackIcon fontSize="large"/>
+              </div>
+
+              <div className="flex w-1/3 justify-center items-center">
+                <CasinoIcon fontSize="large"/>
+              </div>
+
+              <div
+                className={`flex w-1/3 border-2 rounded-lg justify-center items-center ${selectedArrow === 'right' ? 'bg-green-500' : ''}`}
+                onClick={() => setSelectedArrow('right')}
+              >                
+                <ArrowForwardIcon fontSize="large"/>
+              </div>
             </div>
           </div>
 
@@ -138,16 +159,31 @@ function App() {
           </div>
 
           <div className="w-1/3 border-4 rounded-lg">
-            <div className="h-1/2">
-            Second Player
+            <div className="h-2/3">
+              Second Player
               <div>
                 <LinearWithValueLabel fixedValue={50} />
               </div>
             </div>
-            <div className="flex h-1/2 border-2 rounded-lg">
-              <div className="w-1/3 border-2 rounded-lg">left direction</div>
-              <div className="w-1/3">submit button, dice picture</div>
-              <div className="w-1/3 border-2 rounded-lg">right direction</div>
+
+            <div className="flex h-1/3 border-2 rounded-lg">
+              <div
+                className={`flex w-1/3 border-2 rounded-lg justify-center items-center ${selectedArrow === 'left' ? 'bg-green-500' : ''}`}
+                onClick={() => setSelectedArrow('left')}
+              >                
+                <ArrowBackIcon fontSize="large"/>
+              </div>
+
+              <div className="flex w-1/3 justify-center items-center">
+                <CasinoIcon fontSize="large"/>
+              </div>
+
+              <div
+                className={`flex w-1/3 border-2 rounded-lg justify-center items-center ${selectedArrow === 'right' ? 'bg-green-500' : ''}`}
+                onClick={() => setSelectedArrow('right')}
+              >                
+                <ArrowForwardIcon fontSize="large"/>
+              </div>
             </div>
           </div>        
         </div>
