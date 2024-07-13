@@ -1,5 +1,5 @@
-import { createWalletClient, createPublicClient, custom, formatEther, parseEther} from 'viem'
-import { mainnet, polygonAmoy, sepolia } from 'viem/chains'
+import { createWalletClient, createPublicClient, custom, formatEther, parseEther, parseGwei} from 'viem'
+import { arbitrumSepolia } from 'viem/chains'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { IProvider } from "@web3auth/base";
@@ -43,14 +43,8 @@ export default class EthereumRpc {
 
   getViewChain() {
     switch (this.provider.chainId) {
-        case "1":
-            return mainnet;
-        case "0x13882":
-            return polygonAmoy;
-        case "0xaa36a7":
-          return sepolia;
         default:
-            return mainnet;
+            return arbitrumSepolia;
     }
   }
 
@@ -134,8 +128,8 @@ async getAddresses(): Promise<any> {
         });
       
       // data for the transaction
-      const destination = "0x40e1c367Eca34250cAF1bc8330E9EddfD403fC56";
-      const amount = parseEther("0.0001");
+      const destination = "0xBC6dB679B4F43abC493B22b8E67B179bc3f13655";
+      const amount = parseEther("0.001");
       const address =  await this.getAccounts();
 
       // Submit transaction to the blockchain
