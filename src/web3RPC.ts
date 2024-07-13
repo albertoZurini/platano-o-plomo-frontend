@@ -108,22 +108,49 @@ export default class EthereumRpc {
     try {
       const web3 = new Web3(this.provider as any);
 
-      const contractABI = [
-        { inputs: [{ internalType: "string", name: "initMessage", type: "string" }], stateMutability: "nonpayable", type: "constructor" },
-        { inputs: [], name: "message", outputs: [{ internalType: "string", name: "", type: "string" }], stateMutability: "view", type: "function" },
-        {
-          inputs: [{ internalType: "string", name: "newMessage", type: "string" }],
-          name: "update",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
+      const contractABI = [ 
+        { 
+         "inputs": [ 
+          { 
+           "internalType": "bool", 
+           "name": "_gameExists", 
+           "type": "bool" 
+          }, 
+          { 
+           "internalType": "uint256", 
+           "name": "_largestGameId", 
+           "type": "uint256" 
+          } 
+         ], 
+         "name": "changeGameSettings", 
+         "outputs": [], 
+         "stateMutability": "nonpayable", 
+         "type": "function" 
+        }, 
+        { 
+         "inputs": [], 
+         "name": "getOpenGame", 
+         "outputs": [ 
+          { 
+           "internalType": "uint256", 
+           "name": "_gameId", 
+           "type": "uint256" 
+          }, 
+          { 
+           "internalType": "bool", 
+           "name": "_gameExists", 
+           "type": "bool" 
+          } 
+         ], 
+         "stateMutability": "view", 
+         "type": "function" 
+        } 
       ];
-      const contractAddress = "0x04cA407965D60C2B39d892a1DFB1d1d9C30d0334";
+      const contractAddress = "0xD8D5c271a15f58DE6B5686C4c8C8803062c5b1F6";
       const contract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
 
       // Read message from smart contract
-      const message = await contract.methods.message().call();
+      const message = await contract.methods.getOpenGame().call();
       return message;
     } catch (error) {
       return error as string;
