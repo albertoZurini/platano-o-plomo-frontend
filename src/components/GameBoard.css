@@ -1,0 +1,11 @@
+.game-board {
+    position: relative;
+    width: 100%;
+    height: calc(80vh - 160px);
+    background-image: url('../assets/images/background.jpg');
+    background-size: cover;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    overflow: hidden;
+
+}

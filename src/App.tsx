@@ -131,6 +131,28 @@ function App() {
         </div>) : (<button onClick={connect}>login</button>)}
     </div>
   );
+
+  // <div className="flex flex-col h-screen">
+  //   <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-4">
+  //     <div className="h-1/2">
+  //       <div>
+  //         {/* {isConnected && MFAHeader} */}
+  //       </div>
+  //       {/* <div className="grid">{isConnected ? loggedInView : unloggedInView}</div> */}
+  //     </div>
+  //     <div className="h-1/2 flex flex-row mx-3 justify-between">
+  //       <div className="w-1/6 h-15 border-2 border-black rounded-md">First stone</div>
+  //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Second stone</div>
+  //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Third stone</div>
+  //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Fourth stone</div>
+  //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Fifth stone</div>
+  //     </div>
+  //   </div>
+  //   <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-2 flex justify-between">
+  //     <div className="w-1/3 border-4 rounded-lg">first player data</div>
+  //     <div className="w-1/3 border-4 rounded-lg">second player data</div>
+  //   </div>
+  // </div>
 }
 
 export default App;
