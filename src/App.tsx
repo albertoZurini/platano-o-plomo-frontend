@@ -13,6 +13,8 @@ import UserActions from "./components/UserActions";
 import GameHistory from "./components/GameHistory";
 import UserAction from "./components/UserActions";
 import { Direction, GunType, Player } from "./interfaces/player.interface";
+import monkeyGreenImage from './assets/images/monkey-green.png';  // Ensure to use the correct path
+import monkeyBrownImage from './assets/images/monkey-brown.png'; // Ensure to use the correct path
 
 const newChain = {
   chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -379,7 +381,8 @@ function App() {
       delta: 0,
       showRain: false
     },
-    isShooting: false
+    isShooting: false,
+    image: monkeyGreenImage
   }); // Initial position for player one
   const [playerTwo, setPlayerTwo] = useState({
     position: 4,
@@ -392,7 +395,8 @@ function App() {
       isMoving: false,
       showRain: false
     },
-    isShooting: false
+    isShooting: false,
+    image: monkeyBrownImage
   }); // Initial position for player one\
 
   function shoot(setPlayer: any) {
@@ -455,6 +459,21 @@ function App() {
     }, 6000);
 
     // After a while hide everything
+    setTimeout(() => {
+      console.log("rain")
+      setPlayer((prev: Player) => {
+        return {
+          ...prev,
+          gun: {
+            ...prev.gun,
+            isInHand: false,
+            isMoving: false,
+            showRain: false
+          },
+          isShooting: false
+        };
+      });
+    }, 8000);
 
   }
 

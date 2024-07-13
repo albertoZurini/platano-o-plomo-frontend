@@ -22,4 +22,5 @@ export interface Player {
     health: number;
     gun: Gun;
     isShooting: boolean;
+    image: string;
 }
