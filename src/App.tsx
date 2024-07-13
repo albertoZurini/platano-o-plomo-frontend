@@ -3,11 +3,12 @@ import { useWeb3Auth } from "@web3auth/modal-react-hooks";
 import { CHAIN_NAMESPACES, PLUGIN_STATUS, IProvider } from "@web3auth/base";
 import "./App.css";
 import RPC from "./web3RPC"; // for using web3.js
-// import RPC from "./viemRPC"; // for using viem
 // import RPC from "./ethersRPC"; // for using ethers.js
 import { useWalletServicesPlugin  } from "@web3auth/wallet-services-plugin-react-hooks";
 import { createPublicClient, http, createWalletClient, custom } from 'viem'
 import { arbitrumSepolia } from 'viem/chains'
+import Button from '@mui/material/Button';
+import LinearWithValueLabel from "./Healthbar";
 
 function App() {
 
@@ -120,7 +121,9 @@ function App() {
           <div className="w-1/3 border-4 rounded-lg">
             <div className="h-1/2">
             First Player
-              <div></div>
+              <div>
+                <LinearWithValueLabel fixedValue={50} />
+              </div>
             </div>
             <div className="flex h-1/2 border-2 rounded-lg">
               <div className="w-1/3 border-2 rounded-lg">left direction</div>
@@ -136,7 +139,9 @@ function App() {
           <div className="w-1/3 border-4 rounded-lg">
             <div className="h-1/2">
             Second Player
-              <div></div>
+              <div>
+                <LinearWithValueLabel fixedValue={50} />
+              </div>
             </div>
             <div className="flex h-1/2 border-2 rounded-lg">
               <div className="w-1/3 border-2 rounded-lg">left direction</div>
