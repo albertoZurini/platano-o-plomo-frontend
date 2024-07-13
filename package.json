@@ -80,7 +80,7 @@
       "react-app/jest"
     ]
   },
-  "name": "evm-modal-example",
+  "name": "Plata O Plomo",
   "private": true,
   "scripts": {
     "build": "react-app-rewired build",

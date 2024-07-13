@@ -102,6 +102,7 @@ function App() {
       }, 2000);
     }
   };
+  
   return (
       <div className="flex flex-col h-screen">
         <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-4"> 
