@@ -7,6 +7,11 @@ import RPC from "./web3RPC"; // for using web3.js
 // import RPC from "./ethersRPC"; // for using ethers.js
 import { useWalletServicesPlugin } from "@web3auth/wallet-services-plugin-react-hooks";
 import GameBoard from "./components/GameBoard";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import UserActions from "./components/UserActions";
+import GameHistory from "./components/GameHistory";
+import UserAction from "./components/UserActions";
 
 const newChain = {
   chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -359,11 +364,52 @@ function App() {
       );
     }
   }, [isMFAEnabled]);
+  const [playerOneHealth, setPlayerOneHealth] = useState(100);
+  const [playerTwoHealth, setPlayerTwoHealth] = useState(100);
+  const [history, setHistory] = useState<string[]>([]);
+
+  const handleDirection = (player: number, direction: 'left' | 'right') => {
+    const newEntry = `Player ${player} moves ${direction}`;
+    setHistory([...history, newEntry]);
+    console.log(newEntry);
+    // Implement API call or logic for handling direction
+  };
+
+  const handleSubmit = (player: number) => {
+    const newEntry = `Player ${player} submits`;
+    setHistory([...history, newEntry]);
+    console.log(newEntry);
+    // Implement API call or logic for handling submit
+  };
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="app">
       <GameBoard />
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-4">
+            <UserAction
+              user="first"
+              health={playerOneHealth}
+              onDirection={(direction) => handleDirection(1, direction)}
+              onSubmit={() => handleSubmit(1)}
+            />
+          </div>
+          <div className="col-4">
+            <GameHistory history={history} />
+          </div>
+          <div className="col-4">
+            <UserAction
+              user="second"
+              health={playerTwoHealth}
+              onDirection={(direction) => handleDirection(2, direction)}
+              onSubmit={() => handleSubmit(2)}
+            />
+          </div>
+        </div>
+      </div>
     </div>
+
     // <div className="flex flex-col h-screen">
     //   <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-4">
     //     <div className="h-1/2">

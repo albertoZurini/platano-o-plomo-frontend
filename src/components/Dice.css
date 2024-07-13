@@ -1,0 +1,43 @@
+.dice-roll {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.dice {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.dice img {
+    width: 100%;
+    height: 100%;
+    transition: transform 1s ease-in-out;
+}
+
+.dice.rolling img {
+    animation: roll 1s infinite;
+}
+
+@keyframes roll {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(90deg);
+    }
+
+    50% {
+        transform: rotate(180deg);
+    }
+
+    75% {
+        transform: rotate(270deg);
+    }
+}
