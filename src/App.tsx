@@ -12,6 +12,7 @@ import Header from "./components/Header";
 import UserActions from "./components/UserActions";
 import GameHistory from "./components/GameHistory";
 import UserAction from "./components/UserActions";
+import { Direction, GunType, Player } from "./interfaces/player.interface";
 
 const newChain = {
   chainNamespace: CHAIN_NAMESPACES.EIP155,
@@ -367,6 +368,82 @@ function App() {
   const [playerOneHealth, setPlayerOneHealth] = useState(100);
   const [playerTwoHealth, setPlayerTwoHealth] = useState(100);
   const [history, setHistory] = useState<string[]>([]);
+  const [playerOne, setPlayerOne] = useState({
+    position: 0,
+    health: 100,
+    direction: Direction.RIGHT,
+    gun: {
+      type: GunType.BIG,
+      isInHand: true,
+      isMoving: false,
+      delta: 0,
+    },
+    isShooting: false
+  }); // Initial position for player one
+  const [playerTwo, setPlayerTwo] = useState({
+    position: 4,
+    health: 100,
+    direction: Direction.LEFT,
+    gun: {
+      type: GunType.SMALL,
+      delta: 0,
+      isInHand: true,
+      isMoving: false
+    },
+    isShooting: false
+  }); // Initial position for player one\
+
+  function shoot(setPlayer: any) {
+    // stop player from jumping and put the gun in hte hand
+    console.log("Stop the player")
+    setPlayer((prev: Player) => {
+      return {
+        ...prev,
+        gun: {
+          ...prev.gun,
+          isInHand: true
+        },
+        isShooting: true
+      };
+    });
+    // after some time put the gun in front
+    setTimeout(() => {
+      console.log("move the gun in first place")
+      setPlayer((prev: Player) => {
+        return {
+          ...prev,
+          gun: {
+            ...prev.gun,
+            isInHand: false
+          },
+          isShooting: true
+        };
+      });
+    }, 2000);
+    // after some time make the gun move
+    setTimeout(() => {
+      console.log("make the gun move")
+      setPlayer((prev: Player) => {
+        return {
+          ...prev,
+          gun: {
+            ...prev.gun,
+            isInHand: false,
+            isMoving: true
+          },
+          isShooting: true
+        };
+      });
+    }, 4000);
+
+  }
+
+  useEffect(() => {
+    setTimeout(() => {
+      shoot(setPlayerTwo);
+    }, 2000);
+  }, [])
+
 
   const handleDirection = (player: number, direction: 'left' | 'right') => {
     const newEntry = `Player ${player} moves ${direction}`;
@@ -382,9 +459,28 @@ function App() {
     // Implement API call or logic for handling submit
   };
 
+
+
+  const handleMove = (player: number, steps: number, direction: 'left' | 'right') => {
+    if (player === 1) {
+      setPlayerOne((prev) => {
+        let newPosition = Math.floor(Math.random() * 4);
+        let direction = Math.random() > 0.5 ? Direction.LEFT : Direction.RIGHT;
+        return { ...prev, position: newPosition < 0 ? 0 : newPosition > 4 ? 4 : newPosition, direction };
+      });
+    } else {
+      setPlayerTwo((prev) => {
+        let newPosition = Math.floor(Math.random() * 4);
+        let direction = Math.random() > 0.5 ? Direction.LEFT : Direction.RIGHT;
+        return { ...prev, position: newPosition < 0 ? 0 : newPosition > 4 ? 4 : newPosition, direction };
+      });
+    }
+  };
+
   return (
     <div className="app">
-      <GameBoard />
+      <GameBoard playerOne={playerOne} playerTwo={playerTwo} />
+
       <div className="container-fluid">
         <div className="row">
           <div className="col-4">
@@ -393,6 +489,8 @@ function App() {
               health={playerOneHealth}
               onDirection={(direction) => handleDirection(1, direction)}
               onSubmit={() => handleSubmit(1)}
+              initialPosition={playerOne.position}
+              onMove={(steps, direction) => handleMove(1, steps, direction)}
             />
           </div>
           <div className="col-4">
@@ -404,34 +502,36 @@ function App() {
               health={playerTwoHealth}
               onDirection={(direction) => handleDirection(2, direction)}
               onSubmit={() => handleSubmit(2)}
+              initialPosition={playerTwo.position}
+              onMove={(steps, direction) => handleMove(2, steps, direction)}
             />
           </div>
         </div>
       </div>
     </div>
-
-    // <div className="flex flex-col h-screen">
-    //   <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-4">
-    //     <div className="h-1/2">
-    //       <div>
-    //         {/* {isConnected && MFAHeader} */}
-    //       </div>
-    //       {/* <div className="grid">{isConnected ? loggedInView : unloggedInView}</div> */}
-    //     </div>
-    //     <div className="h-1/2 flex flex-row mx-3 justify-between">
-    //       <div className="w-1/6 h-15 border-2 border-black rounded-md">First stone</div>
-    //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Second stone</div>
-    //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Third stone</div>
-    //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Fourth stone</div>
-    //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Fifth stone</div>
-    //     </div>
-    //   </div>
-    //   <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-2 flex justify-between">
-    //     <div className="w-1/3 border-4 rounded-lg">first player data</div>
-    //     <div className="w-1/3 border-4 rounded-lg">second player data</div>
-    //   </div>
-    // </div>
   );
+
+  // <div className="flex flex-col h-screen">
+  //   <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-4">
+  //     <div className="h-1/2">
+  //       <div>
+  //         {/* {isConnected && MFAHeader} */}
+  //       </div>
+  //       {/* <div className="grid">{isConnected ? loggedInView : unloggedInView}</div> */}
+  //     </div>
+  //     <div className="h-1/2 flex flex-row mx-3 justify-between">
+  //       <div className="w-1/6 h-15 border-2 border-black rounded-md">First stone</div>
+  //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Second stone</div>
+  //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Third stone</div>
+  //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Fourth stone</div>
+  //       <div className="w-1/6 h-15 border-2 border-black rounded-md">Fifth stone</div>
+  //     </div>
+  //   </div>
+  //   <div className="w-full h-1/2 border-2 border-gray-300 rounded-lg p-2 flex justify-between">
+  //     <div className="w-1/3 border-4 rounded-lg">first player data</div>
+  //     <div className="w-1/3 border-4 rounded-lg">second player data</div>
+  //   </div>
+  // </div>
 }
 
 export default App;
