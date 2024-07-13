@@ -77,3 +77,48 @@
         transform: translateX(-20vw);
     }
 }
+
+.gun-animation-2 {
+    animation: gun-animation-2 2s ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+@keyframes gun-animation-2 {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-40vw);
+    }
+}
+
+.gun-animation-3 {
+    animation: gun-animation-3 2s ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+@keyframes gun-animation-3 {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-60vw);
+    }
+}
+
+.gun-animation-4 {
+    animation: gun-animation-4 2s ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+@keyframes gun-animation-4 {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-80vw);
+    }
+}

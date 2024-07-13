@@ -377,6 +377,7 @@ function App() {
       isInHand: true,
       isMoving: false,
       delta: 0,
+      showRain: false
     },
     isShooting: false
   }); // Initial position for player one
@@ -385,10 +386,11 @@ function App() {
     health: 100,
     direction: Direction.LEFT,
     gun: {
-      type: GunType.SMALL,
+      type: GunType.NONE,
       delta: 0,
       isInHand: true,
-      isMoving: false
+      isMoving: false,
+      showRain: false
     },
     isShooting: false
   }); // Initial position for player one\
@@ -435,11 +437,61 @@ function App() {
         };
       });
     }, 4000);
+    // set the rain
+    setTimeout(() => {
+      console.log("rain")
+      setPlayer((prev: Player) => {
+        return {
+          ...prev,
+          gun: {
+            ...prev.gun,
+            isInHand: false,
+            isMoving: true,
+            showRain: true
+          },
+          isShooting: true
+        };
+      });
+    }, 6000);
+
+    // After a while hide everything
 
   }
 
   useEffect(() => {
     setTimeout(() => {
+      // First: set the type of gun
+      setPlayerTwo((prev) => {
+        return {
+          ...prev,
+          gun: {
+            ...prev.gun,
+            type: GunType.SMALL
+          }
+        }
+      })
+      // Second: calculate the delta
+      let delta = Math.abs(playerOne.position - playerTwo.position); // TODO: get this from backend
+      setPlayerOne((prev) => {
+        return {
+          ...prev,
+          gun: {
+            ...prev.gun,
+            delta: delta
+          }
+        }
+      })
+      setPlayerTwo((prev) => {
+        return {
+          ...prev,
+          gun: {
+            ...prev.gun,
+            delta: delta
+          }
+        }
+      })
+      // Third: render the animation
+      shoot(setPlayerOne);
       shoot(setPlayerTwo);
     }, 2000);
   }, [])
