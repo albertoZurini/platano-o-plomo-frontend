@@ -12,23 +12,23 @@ const RecentMoves = () => {
       <table className='w-full'>
         <thead>
           <tr>
-            <th className='text-xs'>Player</th>
-            <th className='text-xs'>Dice Number</th>
-            <th className='text-xs'>Start Index</th>
-            <th className='text-xs'>End Index</th>
-            <th className='text-xs'>Direction</th>
-            <th className='text-xs'>Dealt Damage</th>
+            <th className='text-xs text-center'>Player</th>
+            <th className='text-xs text-center'>Dice Number</th>
+            <th className='text-xs text-center'>Start Index</th>
+            <th className='text-xs text-center'>End Index</th>
+            <th className='text-xs text-center'>Direction</th>
+            <th className='text-xs text-center'>Dealt Damage</th>
           </tr>
         </thead>
         <tbody>
           {moves.map((move, index) => (
             <tr key={index}>
-                <td className='text-xs text-center'>{move.player}</td>
-                <td className='text-xs text-center'>{move.diceNumber}</td>
-                <td className='text-xs text-center'>{move.startIndex}</td>
-                <td className='text-xs text-center'>{move.endIndex}</td>
-                <td className='text-xs text-center'>{move.direction}</td>
-                <td className='text-xs text-center'>{move.dealtDamage}</td>
+              <td className='text-xs text-center'>{move.player}</td>
+              <td className='text-xs text-center'>{move.diceNumber}</td>
+              <td className='text-xs text-center'>{move.startIndex}</td>
+              <td className='text-xs text-center'>{move.endIndex}</td>
+              <td className='text-xs text-center'>{move.direction}</td>
+              <td className='text-xs text-center'>{move.dealtDamage}</td>
             </tr>
           ))}
         </tbody>

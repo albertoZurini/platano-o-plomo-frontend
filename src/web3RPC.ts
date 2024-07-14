@@ -1,5 +1,10 @@
 import type { IProvider } from "@web3auth/base";
 import Web3 from "web3";
+import abi from "./abi/main.json";
+import erc20 from "./abi/erc20.json";
+
+const gameContract = "0x1d8bCf5422e150509C872d8d375120eA0628AC93";
+const apeContract = "0x4A1BCa7001B83eD1ac890b34C4D9aB99B9FdEEdB";
 
 export default class EthereumRpc {
   private provider: IProvider;
@@ -108,83 +113,109 @@ export default class EthereumRpc {
     try {
       const web3 = new Web3(this.provider as any);
 
-      const contractABI = [ 
-        { 
-         "inputs": [ 
-          { 
-           "internalType": "bool", 
-           "name": "_gameExists", 
-           "type": "bool" 
-          }, 
-          { 
-           "internalType": "uint256", 
-           "name": "_largestGameId", 
-           "type": "uint256" 
-          } 
-         ], 
-         "name": "changeGameSettings", 
-         "outputs": [], 
-         "stateMutability": "nonpayable", 
-         "type": "function" 
-        }, 
-        { 
-         "inputs": [], 
-         "name": "getOpenGame", 
-         "outputs": [ 
-          { 
-           "internalType": "uint256", 
-           "name": "_gameId", 
-           "type": "uint256" 
-          }, 
-          { 
-           "internalType": "bool", 
-           "name": "_gameExists", 
-           "type": "bool" 
-          } 
-         ], 
-         "stateMutability": "view", 
-         "type": "function" 
-        } 
-      ];
-      const contractAddress = "0xD8D5c271a15f58DE6B5686C4c8C8803062c5b1F6";
+      const contractABI = abi;
+      const contractAddress = "0xD38753c53e305147e829F94222bFf18c74A3Bb14";
       const contract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
 
       // Read message from smart contract
-      const message = await contract.methods.getOpenGame().call();
+      const message = await contract.methods.gameState().call();
       return message;
     } catch (error) {
       return error as string;
     }
   }
 
-  async writeContract() {
+  async readFirstPlayerGameContract() {
     try {
       const web3 = new Web3(this.provider as any);
 
-      const contractABI = [
-        { inputs: [{ internalType: "string", name: "initMessage", type: "string" }], stateMutability: "nonpayable", type: "constructor" },
-        { inputs: [], name: "message", outputs: [{ internalType: "string", name: "", type: "string" }], stateMutability: "view", type: "function" },
-        {
-          inputs: [{ internalType: "string", name: "newMessage", type: "string" }],
-          name: "update",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-      ];
-      const contractAddress = "0x04cA407965D60C2B39d892a1DFB1d1d9C30d0334";
+      const contractABI = abi;
+      const contractAddress = gameContract;
+      const contract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
+
+      // Read message from smart contract
+      const message = await contract.methods.playerOne().call();
+      return message as any;
+    } catch (error) {
+      return error as string;
+    }
+  }
+
+  async writeGameContractRegister(name: string) {
+    try {
+      console.log("trying to register the user to the game contract")
+      const web3 = new Web3(this.provider as any);
+      const contractABI = abi;
+      const contractAddress = gameContract;
       const myContract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
-      console.log(myContract);
-      console.log((await web3.eth.getAccounts())[0]);
-      // Generate random number between 1000 and 9000
-      const randomNumber = Math.floor(Math.random() * 9000) + 1000;
-      console.log(randomNumber);
       // Send transaction to smart contract to update message
-      const receipt = await myContract.methods.update(`Web3Auth is awesome ${randomNumber} times!`).send({
+      const receipt = await myContract.methods.createGame(name).send({
+        from: `${(await web3.eth.getAccounts())[0]}`,
+      });
+      console.log(receipt.transactionHash.toString());
+      console.log("success")
+      return receipt;
+    } catch (error) {
+      console.log("error");
+      console.log(error);
+      return error as string;
+    }
+  }
+
+  async writeApeContractMint() {
+    try {
+      console.log("Trying to mint Ape token")
+      const web3 = new Web3(this.provider as any);
+      const contractABI = erc20;
+      const contractAddress = apeContract;
+      const myContract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
+      // Send transaction to smart contract to update message
+      const receipt = await myContract.methods.mint(`${(await web3.eth.getAccounts())[0]}`, 1000e18).send({
+        from: `${(await web3.eth.getAccounts())[0]}`,
+      });
+      // console.log("Ape token minted for user", receipt.transactionHash.toString());
+      console.log("success")
+      return receipt;
+    } catch (error) {
+      console.log("error");
+      console.log(error);
+      return error as string;
+    }
+  }
+
+  async writeApeContractApproval() {
+    try {
+      console.log("Trying to approve the game contract")
+      const web3 = new Web3(this.provider as any);
+      const contractABI = erc20;
+      const contractAddress = apeContract;
+      const myContract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
+      // console.log(myContract);
+      // console.log((await web3.eth.getAccounts())[0]);
+      // Send transaction to smart contract to update message
+      const receipt = await myContract.methods.approve(gameContract, 1000e18).send({
         from: `${(await web3.eth.getAccounts())[0]}`,
       });
       // console.log(receipt.transactionHash.toString());
+      console.log("success")
       return receipt;
+    } catch (error) {
+      console.log("error");
+      console.log(error);
+      return error as string;
+    }
+  }
+
+  async readApeContractAllowance() {
+    try {
+      const web3 = new Web3(this.provider as any);
+      const contractABI = erc20;
+      const contractAddress = apeContract;
+      const contract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
+      // Read message from smart contract
+      const message = await contract.methods.allowance(`${(await web3.eth.getAccounts())[0]}`, gameContract).call();
+      console.log("success")
+      return message;
     } catch (error) {
       return error as string;
     }

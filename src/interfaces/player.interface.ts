@@ -3,7 +3,6 @@ export enum GunType {
     SMALL = 'small',
     BIG = 'big',
     NONE = 'none'
-
 }
 export interface Gun {
     type: GunType;
