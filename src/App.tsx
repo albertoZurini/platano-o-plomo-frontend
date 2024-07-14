@@ -11,6 +11,8 @@ import { Direction, GunType, Player } from "./interfaces/player.interface";
 import monkeyGreenImage from './assets/images/monkey-green.png';  // Ensure to use the correct path
 import monkeyBrownImage from './assets/images/monkey-brown.png'; // Ensure to use the correct path
 import Web3 from "web3";
+import UserAction from "./components/UserActions";
+import GameHistory from "./components/GameHistory";
 
 enum GameState {
   MakingGame,
@@ -21,38 +23,6 @@ enum GameState {
 }
 
 function App() {
-
-  const getAccounts = async () => {
-    if (!provider) {
-      console.log("provider not initialized yet");
-      return;
-    }
-    const rpc = new RPC(provider as IProvider);
-    const address = await rpc.getAccounts();
-    console.log(address);
-  };
-
-  const getBalance = async () => {
-    if (!provider) {
-      console.log("provider not initialized yet");
-      return;
-    }
-    const rpc = new RPC(provider as IProvider);
-    const balance = await rpc.getBalance();
-    console.log(balance);
-  };
-
-
-
-  // TODO: Getting two booleans for showing if first and second player exist in the game (bool, bool)
-  // TODO: function getting the location ( Index from 0 to 4 ) of both players as well as their direction from smart contract
-  // TODO: function for registering the user, accepting a name 
-  // TODO: function for accepting the move from user, accepts a direction
-
-  const [firstPlayerCanJoin, setFirstPlayerCanJoin] = useState(true)
-  const [secondPlayerCanJoin, setSecondPlayerCanJoin] = useState(true)
-  const [name, setName] = useState('');
-
   const [playerOne, setPlayerOne] = useState({
     name: null,
     position: 0,
@@ -105,37 +75,42 @@ function App() {
         console.error(error);
       }
     };
-
     init();
   }, [initModal, web3Auth]);
 
-  // const readContract = async () => {
-  //   if (!provider) {
-  //     console.log("provider not initialized yet");
-  //     return;
-  //   }
-  //   const rpc = new RPC(provider as IProvider);
-  //   const message = await rpc.readContract();
-  //   // Convert bigint to number within the safe integer range
-  //   const messageNumber = Number(message);
-  //   if (messageNumber < Number.MIN_SAFE_INTEGER || messageNumber > Number.MAX_SAFE_INTEGER) {
-  //     console.error("The message value is outside the safe integer range.");
-  //     return;
-  //   }
-  //   // Use the number to index into the GameState enum
-  //   const gameState = GameState[messageNumber];
-  //   console.log(gameState); // Logs the name of the enum value
-  //   console.log("Now trying to interact with the Ape contract!");
-  //   const message1 = await rpc.readApeContract();
-  //   console.log(message1);
-  //   console.log(message1);
-  //   // }
-  // };
+  const getAccounts = async () => {
+    if (!provider) {
+      console.log("provider not initialized yet");
+      return;
+    }
+    const rpc = new RPC(provider as IProvider);
+    const address = await rpc.getAccounts();
+    console.log(address);
+  };
 
-  const onboardUser = async () => {
-    // mint ape token for the user
-    // approve tokens to the game contract
-    // then we add the user to the game
+  const getBalance = async () => {
+    if (!provider) {
+      console.log("provider not initialized yet");
+      return;
+    }
+    const rpc = new RPC(provider as IProvider);
+    const balance = await rpc.getBalance();
+    console.log(balance);
+  };
+
+
+
+  // TODO: Getting two booleans for showing if first and second player exist in the game (bool, bool)
+  // TODO: function getting the location ( Index from 0 to 4 ) of both players as well as their direction from smart contract
+  // TODO: function for registering the user, accepting a name 
+  // TODO: function for accepting the move from user, accepts a direction
+
+  const [firstPlayerCanJoin, setFirstPlayerCanJoin] = useState(true)
+  const [secondPlayerCanJoin, setSecondPlayerCanJoin] = useState(true)
+  const [firstPlayerName, setFirstPlayerName] = useState('');
+  const [secondPlayerName, setSecondPlayerName] = useState('');
+  const onBoardUser = async (playerName: string) => {
+    console.log('shit')
     if (!provider) {
       console.log("provider not initialized yet");
       return;
@@ -143,13 +118,11 @@ function App() {
     const rpc = new RPC(provider as IProvider);
     const receipt = await rpc.writeApeContractMint();
     const receipt1 = await rpc.writeApeContractApproval();
-    const receipt2 = await rpc.writeGameContractRegister(name);
-    // this part can be used to update data after the transaction is done
-    // if (receipt) {
-    //   setTimeout(async () => {
-    //     await readContract();
-    //   }, 2000);
-    // }
+    console.log(playerName);
+    const receipt2 = await rpc.writeGameContractRegister(playerName);
+    console.log(receipt)
+    console.log(receipt1)
+    console.log(receipt2)
   };
 
   // get the playerOne
@@ -172,89 +145,141 @@ function App() {
       direction: receipt.facingRight ? Direction.RIGHT : Direction.LEFT,
     }));
   }
+  const handleDirection = (player: number, direction: 'left' | 'right') => {
+    const newEntry = `Player ${player} moves ${direction}`;
+    console.log(newEntry);
+    // Implement API call or logic for handling direction
+  };
 
-  const approveApeContract = async () => {
-    if (!provider) {
-      console.log("provider not initialized yet");
-      return;
+  const handleMove = (player: number, newPosition: number, direction: 'left' | 'right') => {
+    if (player === 1) {
+      setPlayerOne((prev) => {
+        return { ...prev, position: newPosition, direction: direction == 'left' ? Direction.LEFT : Direction.RIGHT };
+      });
+    } else {
+      setPlayerTwo((prev) => {
+        return { ...prev, position: newPosition, direction: direction == 'left' ? Direction.LEFT : Direction.RIGHT };
+      });
     }
-    const rpc = new RPC(provider as IProvider);
-    const receipt = await rpc.writeApeContractApproval();
-    console.log(receipt);
-  }
+  };
+  const handleSubmit = (player: number) => {
+    const newEntry = `Player ${player} submits`;
+    console.log(newEntry);
+  };
+  function shoot(setPlayer: any) {
+    // stop player from jumping and put the gun in hte hand
+    console.log("Stop the player")
+    setPlayer((prev: Player) => {
+      return {
+        ...prev,
+        gun: {
+          ...prev.gun,
+          isInHand: true
+        },
+        isShooting: true
+      };
+    });
+    // after some time put the gun in front
+    setTimeout(() => {
+      console.log("move the gun in first place")
+      setPlayer((prev: Player) => {
+        return {
+          ...prev,
+          gun: {
+            ...prev.gun,
+            isInHand: false
+          },
+          isShooting: true
+        };
+      });
+    }, 2000);
+    // after some time make the gun move
+    setTimeout(() => {
+      console.log("make the gun move")
+      setPlayer((prev: Player) => {
+        return {
+          ...prev,
+          gun: {
+            ...prev.gun,
+            isInHand: false,
+            isMoving: true
+          },
+          isShooting: true
+        };
+      });
+    }, 4000);
+    // set the rain
+    setTimeout(() => {
+      console.log("rain")
+      setPlayer((prev: Player) => {
+        return {
+          ...prev,
+          gun: {
+            ...prev.gun,
+            isInHand: false,
+            isMoving: true,
+            showRain: true
+          },
+          isShooting: true
+        };
+      });
+    }, 6000);
 
-  const allowanceApeContract = async () => {
-    if (!provider) {
-      console.log("provider not initialized yet");
-      return;
-    }
-    const rpc = new RPC(provider as IProvider);
-    const receipt = await rpc.readApeContractAllowance();
-    console.log(receipt);
+    // After a while hide everything
+    setTimeout(() => {
+      console.log("rain")
+      setPlayer((prev: Player) => {
+        return {
+          ...prev,
+          gun: {
+            ...prev.gun,
+            isInHand: false,
+            isMoving: false,
+            showRain: false
+          },
+          isShooting: false
+        };
+      });
+    }, 8000);
   }
-
-  const playersExist = async () => {
-    // Call the smart contract to check if the players exist
-    // If they exist, set the state to true
-    setFirstPlayerCanJoin(true);
-    setSecondPlayerCanJoin(true);
-  }
-
   return (
     <div>
       {status === ADAPTER_STATUS.CONNECTED ? (
-        <div>
+        <div className="app">
           <GameBoard playerOne={playerOne} playerTwo={playerTwo} />
-          <div className="flex flex-col">
-            <div className="w-full border-2 border-gray-300 rounded-lg p-3 flex justify-between">
-              <div className="w-1/4 border-2 rounded-lg mx-1">
-                {firstPlayerCanJoin ?
-                  <div className='w-full flex justify-center items-center'>
-                    <form onSubmit={(e) => {
-                      e.preventDefault();
-                      onboardUser();
-                    }} className='flex flex-col items-center mx-2 my-2'>
-                      <input
-                        type='text'
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder='Enter your name'
-                        className='text-center my-1' // Added margin-bottom for spacing
-                      />
-                      <button type='submit' className='px-4 py-2 bg-blue-500 text-white rounded'>
-                        Join Game
-                      </button>
-                    </form>
-                  </div>
-                  :
-                  <PlayerCard></PlayerCard>}
-              </div>
 
-              <div className="w-2/4 border-2 rounded-lg mx-1">
-                <RecentMoves />
-                {/* <button onClick={(e) => { e.preventDefault(); approveApeContract(); }} className='px-4 py-2 bg-blue-500 text-white rounded'>Approve</button>
-                <button onClick={(e) => { e.preventDefault(); allowanceApeContract(); }} className='px-4 py-2 bg-blue-500 text-white rounded'>Allowance</button> */}
-                <button onClick={getPlayerOne}>Get Player</button>
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-4">
+                <UserAction
+                  user="first"
+                  health={playerOne.health}
+                  onDirection={(direction) => handleDirection(1, direction)}
+                  onSubmit={() => handleSubmit(1)}
+                  initialPosition={playerOne.position}
+                  onMove={(steps, direction) => handleMove(1, steps, direction)}
+                  playerCanJoin={firstPlayerCanJoin}
+                  setName={setFirstPlayerName}
+                  playerName={firstPlayerName}
+                  onBoardUser={onBoardUser}
+                />
               </div>
-
-              <div className="w-1/4 border-2 rounded-lg mx-1">
-                {secondPlayerCanJoin ?
-                  <div className='w-full flex justify-center items-center'>
-                    <form onSubmit={() => console.log("registering the user")} className='flex flex-col items-center mx-2 my-2'>
-                      <input
-                        type='text'
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder='Enter your name'
-                        className='text-center my-1'
-                      />
-                      <button type='submit' className='px-4 py-2 bg-blue-500 text-white rounded'>
-                        Join Game
-                      </button>
-                    </form>
-                  </div> :
-                  <PlayerCard></PlayerCard>
-                }
+              <div className="col-4">
+                <GameHistory />
+              </div>
+              <div className="col-4">
+                <UserAction
+                  user="second"
+                  health={playerTwo.health}
+                  onDirection={(direction) => handleDirection(2, direction)}
+                  onSubmit={() => handleSubmit(2)}
+                  initialPosition={playerTwo.position}
+                  onMove={(steps, direction) => handleMove(2, steps, direction)}
+                  playerCanJoin={secondPlayerCanJoin}
+                  setName={setSecondPlayerName}
+                  playerName={secondPlayerName}
+                  onBoardUser={onBoardUser}
+                />
               </div>
             </div>
           </div>
@@ -268,163 +293,3 @@ function App() {
 }
 
 export default App;
-
-
-
-
-// const sendTransaction = async () => {
-//   if (!provider) {
-//     console.log("provider not initialized yet");
-//     return;
-//   }
-//   console.log("Function Triggered")
-//   const rpc = new RPC(provider as IProvider);
-//   const receipt = await rpc.sendTransaction();
-//   console.log(receipt);
-// };
-
-// function shoot(setPlayer: any) {
-//   // stop player from jumping and put the gun in hte hand
-//   console.log("Stop the player")
-//   setPlayer((prev: Player) => {
-//     return {
-//       ...prev,
-//       gun: {
-//         ...prev.gun,
-//         isInHand: true
-//       },
-//       isShooting: true
-//     };
-//   });
-//   // after some time put the gun in front
-//   setTimeout(() => {
-//     console.log("move the gun in first place")
-//     setPlayer((prev: Player) => {
-//       return {
-//         ...prev,
-//         gun: {
-//           ...prev.gun,
-//           isInHand: false
-//         },
-//         isShooting: true
-//       };
-//     });
-//   }, 2000);
-//   // after some time make the gun move
-//   setTimeout(() => {
-//     console.log("make the gun move")
-//     setPlayer((prev: Player) => {
-//       return {
-//         ...prev,
-//         gun: {
-//           ...prev.gun,
-//           isInHand: false,
-//           isMoving: true
-//         },
-//         isShooting: true
-//       };
-//     });
-//   }, 4000);
-//   // set the rain
-//   setTimeout(() => {
-//     console.log("rain")
-//     setPlayer((prev: Player) => {
-//       return {
-//         ...prev,
-//         gun: {
-//           ...prev.gun,
-//           isInHand: false,
-//           isMoving: true,
-//           showRain: true
-//         },
-//         isShooting: true
-//       };
-//     });
-//   }, 6000);
-
-//   // After a while hide everything
-//   setTimeout(() => {
-//     console.log("rain")
-//     setPlayer((prev: Player) => {
-//       return {
-//         ...prev,
-//         gun: {
-//           ...prev.gun,
-//           isInHand: false,
-//           isMoving: false,
-//           showRain: false
-//         },
-//         isShooting: false
-//       };
-//     });
-//   }, 8000);
-// }
-
-// useEffect(() => {
-//   setTimeout(() => {
-//     // First: set the type of gun
-//     setPlayerTwo((prev) => {
-//       return {
-//         ...prev,
-//         gun: {
-//           ...prev.gun,
-//           type: GunType.SMALL
-//         }
-//       }
-//     })
-//     // Second: calculate the delta
-//     let delta = Math.abs(playerOne.position - playerTwo.position); // TODO: get this from backend
-//     setPlayerOne((prev) => {
-//       return {
-//         ...prev,
-//         gun: {
-//           ...prev.gun,
-//           delta: delta
-//         }
-//       }
-//     })
-//     setPlayerTwo((prev) => {
-//       return {
-//         ...prev,
-//         gun: {
-//           ...prev.gun,
-//           delta: delta
-//         }
-//       }
-//     })
-//     // Third: render the animation
-//     shoot(setPlayerOne);
-//     shoot(setPlayerTwo);
-//   }, 2000);
-// }, [])
-
-
-// const handleDirection = (player: number, direction: 'left' | 'right') => {
-//   const newEntry = `Player ${player} moves ${direction}`;
-//   // setHistory([...history, newEntry]);
-//   console.log(newEntry);
-//   // Implement API call or logic for handling direction
-// };
-
-// const handleSubmit = (player: number) => {
-//   const newEntry = `Player ${player} submits`;
-//   setHistory([...history, newEntry]);
-//   console.log(newEntry);
-//   // Implement API call or logic for handling submit
-// };
-
-// const handleMove = (player: number, steps: number, direction: 'left' | 'right') => {
-//   if (player === 1) {
-//     setPlayerOne((prev) => {
-//       let newPosition = 3;
-//       let direction = Direction.RIGHT;
-//       return { ...prev, position: newPosition, direction };
-//     });
-//   } else {
-//     setPlayerTwo((prev) => {
-//       let newPosition = Math.floor(Math.random() * 4);
-//       let direction = Math.random() > 0.5 ? Direction.LEFT : Direction.RIGHT;
-//       return { ...prev, position: newPosition, direction };
-//     });
-//   }
-// };

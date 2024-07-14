@@ -3,8 +3,8 @@ import Web3 from "web3";
 import abi from "./abi/main.json";
 import erc20 from "./abi/erc20.json";
 
-const gameContract = "0x1d8bCf5422e150509C872d8d375120eA0628AC93";
-const apeContract = "0x4A1BCa7001B83eD1ac890b34C4D9aB99B9FdEEdB";
+const gameContract = "0x58cB226b023C134DBd4567495d91D9973ab33D26";
+const apeContract = "0x3590490a548854a2ecdd335b50dc9ee945197db7";
 
 export default class EthereumRpc {
   private provider: IProvider;
@@ -76,7 +76,7 @@ export default class EthereumRpc {
       }
 
       // calculate gas transaction before sending
-      transaction = { ...transaction, gas: await web3.eth.estimateGas(transaction)} as any;
+      transaction = { ...transaction, gas: await web3.eth.estimateGas(transaction) } as any;
 
       // Submit transaction to the blockchain and wait for it to be mined
       const receipt = await web3.eth.sendTransaction(transaction);
@@ -236,9 +236,9 @@ export default class EthereumRpc {
   toStringJson(data: any) {
     // can't serialize a BigInt, so this hack
     return JSON.parse(JSON.stringify(data, (key, value) =>
-        typeof value === 'bigint'
-            ? value.toString()
-            : value // return everything else unchanged
+      typeof value === 'bigint'
+        ? value.toString()
+        : value // return everything else unchanged
     ));
   }
 }
