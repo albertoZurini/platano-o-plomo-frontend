@@ -3,7 +3,7 @@ import Web3 from "web3";
 import abi from "./abi/main.json";
 import erc20 from "./abi/erc20.json";
 
-const gameContract = "0x58cB226b023C134DBd4567495d91D9973ab33D26";
+const gameContract = "0xEA5c7126e40c4502954Bb3D1DA6ce7d8F58f9d3D";
 const apeContract = "0x3590490a548854a2ecdd335b50dc9ee945197db7";
 
 export default class EthereumRpc {
@@ -114,14 +114,14 @@ export default class EthereumRpc {
       const web3 = new Web3(this.provider as any);
 
       const contractABI = abi;
-      const contractAddress = "0xD38753c53e305147e829F94222bFf18c74A3Bb14";
+      const contractAddress = gameContract;
       const contract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
 
       // Read message from smart contract
-      const message = await contract.methods.gameState().call();
+      const message: number = await contract.methods.gameState().call();
       return message;
     } catch (error) {
-      return error as string;
+      throw error
     }
   }
 
@@ -141,6 +141,21 @@ export default class EthereumRpc {
     }
   }
 
+  async readSecondPlayerGameContract() {
+    try {
+      const web3 = new Web3(this.provider as any);
+
+      const contractABI = abi;
+      const contractAddress = gameContract;
+      const contract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
+
+      // Read message from smart contract
+      const message = await contract.methods.playerTwo().call();
+      return message as any;
+    } catch (error) {
+      return error as string;
+    }
+  }
   async writeGameContractRegister(name: string) {
     try {
       console.log("trying to register the user to the game contract")
@@ -240,5 +255,62 @@ export default class EthereumRpc {
         ? value.toString()
         : value // return everything else unchanged
     ));
+  }
+  async writeRollDice(direction: boolean) {
+    try {
+      console.log("Trying to approve the game contract")
+      const web3 = new Web3(this.provider as any);
+      const contractABI = abi;
+      const contractAddress = gameContract;
+      const myContract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
+      const receipt = await myContract.methods.rollDice(direction).send({
+        from: `${(await web3.eth.getAccounts())[0]}`,
+      });
+      console.log(receipt)
+      console.log("success")
+      return receipt;
+    } catch (error) {
+      console.log("error");
+      console.log(error);
+      return error as string;
+    }
+  }
+  async getPlayerOne(direction: boolean) {
+    try {
+      console.log("Trying to approve the game contract")
+      const web3 = new Web3(this.provider as any);
+      const contractABI = abi;
+      const contractAddress = gameContract;
+      const myContract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
+      const receipt = await myContract.methods.playerOne().send({
+        from: `${(await web3.eth.getAccounts())[0]}`,
+      });
+      console.log(receipt)
+      console.log("success")
+      return receipt;
+    } catch (error) {
+      console.log("error");
+      console.log(error);
+      return error as string;
+    }
+  }
+  async getGameState() {
+    try {
+      console.log("Trying to approve the game contract")
+      const web3 = new Web3(this.provider as any);
+      const contractABI = abi;
+      const contractAddress = gameContract;
+      const myContract = new web3.eth.Contract(JSON.parse(JSON.stringify(contractABI)), contractAddress);
+      const receipt = await myContract.methods.gameState().send({
+        from: `${(await web3.eth.getAccounts())[0]}`,
+      });
+      console.log(receipt)
+      console.log("success")
+      return receipt;
+    } catch (error) {
+      console.log("error");
+      console.log(error);
+      return error as string;
+    }
   }
 }

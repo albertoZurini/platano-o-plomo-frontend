@@ -22,4 +22,5 @@ export interface Player {
     gun: Gun;
     isShooting: boolean;
     image: string;
+    dice?: number;
 }

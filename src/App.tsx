@@ -37,6 +37,7 @@ function App() {
       delta: 0,
     },
     isShooting: false,
+    dice: 0
   });
 
   const [playerTwo, setPlayerTwo] = useState({
@@ -53,8 +54,10 @@ function App() {
       delta: 0,
     },
     isShooting: false,
+    dice: 0
   });
 
+  const [gameState, setGameState] = useState(4)
   const {
     initModal,
     provider,
@@ -65,6 +68,7 @@ function App() {
     status,
   } = useWeb3Auth();
 
+  const rpc = new RPC(provider as IProvider);
   useEffect(() => {
     const init = async () => {
       try {
@@ -77,6 +81,44 @@ function App() {
     };
     init();
   }, [initModal, web3Auth]);
+  useEffect(() => {
+    rpc.readContract().then(message =>
+      setGameState(message)
+    )
+  }, [provider])
+  useEffect(() => {
+    if (gameState == 1 || gameState == 2) {
+      rpc.readFirstPlayerGameContract().then(player => {
+        console.log(player)
+        setFirstPlayerName(player[1])
+        setPlayerOne((prev) => {
+          return {
+            ...prev,
+            health: Number(player["health"]),
+            direction: player['facingRight'] ? Direction.RIGHT : Direction.LEFT,
+            dice: Number(player['lastDice']),
+            position: Number(player['position']),
+          }
+        })
+        setFirstPlayerCanJoin(false)
+      })
+      rpc.readSecondPlayerGameContract().then(player => {
+        console.log(player)
+        setSecondPlayerName(player[1])
+        setPlayerTwo((prev) => {
+          return {
+            ...prev,
+            health: Number(player["health"]),
+            direction: player['facingRight'] ? Direction.RIGHT : Direction.LEFT,
+            dice: Number(player['lastDice']),
+            position: Number(player['position']),
+          }
+        })
+        setSecondPlayerCanJoin(false)
+      })
+    }
+    console.log(playerOne)
+  }, [gameState])
 
   const getAccounts = async () => {
     if (!provider) {
@@ -115,7 +157,6 @@ function App() {
       console.log("provider not initialized yet");
       return;
     }
-    const rpc = new RPC(provider as IProvider);
     const receipt = await rpc.writeApeContractMint();
     const receipt1 = await rpc.writeApeContractApproval();
     console.log(playerName);
@@ -131,7 +172,6 @@ function App() {
       console.log("provider not initialized yet");
       return;
     }
-    const rpc = new RPC(provider as IProvider);
     const receipt = await rpc.readFirstPlayerGameContract();
     const _position = Number(Web3.utils.toWei(receipt.position, "ether")) + 1;
     const _health = Number(Web3.utils.toWei(receipt.health, "ether"));
@@ -145,9 +185,9 @@ function App() {
       direction: receipt.facingRight ? Direction.RIGHT : Direction.LEFT,
     }));
   }
-  const handleDirection = (player: number, direction: 'left' | 'right') => {
+  const handleDirection = async (player: number, direction: 'left' | 'right') => {
     const newEntry = `Player ${player} moves ${direction}`;
-    console.log(newEntry);
+    const reciept = await rpc.writeRollDice(direction === 'right')
     // Implement API call or logic for handling direction
   };
 
@@ -161,10 +201,6 @@ function App() {
         return { ...prev, position: newPosition, direction: direction == 'left' ? Direction.LEFT : Direction.RIGHT };
       });
     }
-  };
-  const handleSubmit = (player: number) => {
-    const newEntry = `Player ${player} submits`;
-    console.log(newEntry);
   };
   function shoot(setPlayer: any) {
     // stop player from jumping and put the gun in hte hand
@@ -255,13 +291,13 @@ function App() {
                   user="first"
                   health={playerOne.health}
                   onDirection={(direction) => handleDirection(1, direction)}
-                  onSubmit={() => handleSubmit(1)}
                   initialPosition={playerOne.position}
                   onMove={(steps, direction) => handleMove(1, steps, direction)}
                   playerCanJoin={firstPlayerCanJoin}
                   setName={setFirstPlayerName}
                   playerName={firstPlayerName}
                   onBoardUser={onBoardUser}
+                  dice={playerOne.dice}
                 />
               </div>
               <div className="col-4">
@@ -272,13 +308,13 @@ function App() {
                   user="second"
                   health={playerTwo.health}
                   onDirection={(direction) => handleDirection(2, direction)}
-                  onSubmit={() => handleSubmit(2)}
                   initialPosition={playerTwo.position}
                   onMove={(steps, direction) => handleMove(2, steps, direction)}
                   playerCanJoin={secondPlayerCanJoin}
                   setName={setSecondPlayerName}
                   playerName={secondPlayerName}
                   onBoardUser={onBoardUser}
+                  dice={playerTwo.dice}
                 />
               </div>
             </div>
