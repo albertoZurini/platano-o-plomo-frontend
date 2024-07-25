@@ -3,7 +3,7 @@ import Web3 from "web3";
 import abi from "./abi/main.json";
 import erc20 from "./abi/erc20.json";
 
-const gameContract = "0xEA5c7126e40c4502954Bb3D1DA6ce7d8F58f9d3D";
+const gameContract = "0xfb389B2c3B30136b325DFbF7B8230F120F6eAC49";
 const apeContract = "0x3590490a548854a2ecdd335b50dc9ee945197db7";
 
 export default class EthereumRpc {

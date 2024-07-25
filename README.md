@@ -1,11 +1,23 @@
-# Web3Auth (`@web3auth/modal`) x EVM x React
+# Web3Auth (`@web3auth/modal`) x EVM x React - EthBrussels 2024
 
 [![Web3Auth](https://img.shields.io/badge/Web3Auth-SDK-blue)](https://web3auth.io/docs/sdk/pnp/web/modal)
 [![Web3Auth](https://img.shields.io/badge/Web3Auth-Community-cyan)](https://community.web3auth.io)
 
 [Join our Community Portal](https://community.web3auth.io/) to get support and stay up to date with the latest news and updates.
 
-This example demonstrates how to use Web3Auth with EVM in React.
+This example demonstrates how to use Web3Auth with EVM in React for the EthBrussels 2024 hackathon.
+
+## Front-end
+
+The front-end was developed using React and Tailwind CSS. We integrated Web3Auth to provide seamless interaction for our game. The game features monkeys as HTML elements that move around the page. When an action is performed, bananas (images contained in a div) will appear and move to their designated positions using absolute positioning. The animation is synchronized using JavaScript to ensure a smooth experience.
+
+## Smart Contracts
+
+The smart contracts for ApeCoins and the PlatanoPlomo Game are deployed and verified on Arbitrum Sepolia. These contracts utilize Chainlink VRF for randomization, ensuring fair gameplay.
+
+- [ApeCoins Contract](https://arbitrum-sepolia.blockscout.com/address/0x3590490a548854a2ecdd335b50dc9ee945197db7?tab=contract)
+- [PlatanoPlomo Game Contract](https://arbitrum-sepolia.blockscout.com/address/0x22c0B8189E5f0277AF27F5E988eb2837C5a777C7?tab=contract)
+- [PlatanoPlomo Game Live Demo](https://res.zurini.dev/ethbrussels2024)
 
 ## How to Use
 
